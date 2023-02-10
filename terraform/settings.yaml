@@ -1,0 +1,12 @@
+
+location: eastus
+
+vnet:
+  network: 10.0.0.0/8
+  subnet:
+    nodes: 10.0.2.0/23
+    pods: 10.0.4.0/23
+
+flux:
+  repository: https://github.com/sighup/xyz-infra
+  path: ./clusters/dev-cluster

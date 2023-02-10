@@ -1,0 +1,55 @@
+name: Build Infra
+
+on:
+  workflow_dispatch:
+    inputs:
+      host:
+        description: "Host header"
+        default: "xyz.local"
+jobs:
+  deploy:
+    name: Deploy Cluster
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: './terraform'
+
+    steps:
+    - name: "Checkout"
+      uses: actions/checkout@master
+
+    - name: "Terraform Setup"
+      uses: hashicorp/setup-terraform@v1
+
+    - name: "Terraform Init"
+      id: init
+      run: terraform init
+
+    - name: "Terraform Plan"
+      id: plan
+      run:  terraform plan -out="plan.out"
+      continue-on-error: false
+
+    - name: "Terraform Apply"
+      id: apply
+      run: terraform apply -auto-approve plan.out
+
+    - name: "Terraform Output"
+      id: tf-output
+      run: echo "::set-output name=PIP::$(terraform-bin output --raw public_ip)"
+
+    - name: "Content Check"
+      id: check
+      run: |
+        sleep 60
+        curl -s --retry-all-errors --max-time 600 --header "Host: xyz.local" http://${{ steps.tf-output.outputs.PIP }} | jq
+
+    - name: "Terraform Destroy"
+      id: destroy
+      run: terraform destroy -auto-approve

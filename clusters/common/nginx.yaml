@@ -1,0 +1,39 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx-ingress
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: nginx-ingress
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://helm.nginx.com/stable
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: nginx-ingress
+  namespace: flux-system
+spec:
+  interval: 5m
+  targetNamespace: nginx-ingress
+  chart:
+    spec:
+      chart: nginx-ingress
+      version: '0.16.1'
+      sourceRef:
+        kind: HelmRepository
+        name: nginx-ingress
+        namespace: flux-system
+      interval: 1m
+  valuesFrom:
+  - kind: ConfigMap
+    name: nginx-values
+    valuesKey: values.yaml
+  values:
+    nodeSelector:
+      kubernetes.io/os: linux

@@ -1,0 +1,62 @@
+name: base-ci
+
+on:
+  pull_request:
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - hook_id: check-added-large-files
+          - hook_id: check-merge-conflict
+          - hook_id: check-shebang-scripts-are-executable
+          - hook_id: check-symlinks
+          - hook_id: mixed-line-ending
+          - hook_id: trailing-whitespace
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+
+      - uses: cloudposse/github-action-pre-commit@v3.0.0
+        with:
+          extra_args: ${{ matrix.hook_id }} --color=always
+
+  tfsec:
+    runs-on: ubuntu-latest
+    name: Terraform Security Scan
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+
+      - name: Run tfsec
+        uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          working_directory: terraform
+          additional_args: --config-file=terraform/.tfsec/config.yaml
+
+  tflint:
+    runs-on: ubuntu-latest
+    name: Terraform Lint
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+
+      - uses: terraform-linters/setup-tflint@v3
+        with:
+          tflint_version: latest
+
+      - name: Init tflint
+        run: tflint --init
+        working-directory: terraform
+
+      - name: Run tflint
+        run: tflint -f compact
+        working-directory: terraform

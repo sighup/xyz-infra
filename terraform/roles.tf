@@ -39,8 +39,3 @@ resource "azuread_group" "cluster-admins" {
   owners           = [data.azurerm_client_config.current.object_id]
   security_enabled = true
 }
-
-#resource "azuread_group_member" "admin" {
-#  group_object_id  = azuread_group.cluster-admins.id
-#  member_object_id = var.azure_rbac_cluster_admin_user
-#}

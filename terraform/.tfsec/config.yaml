@@ -1,0 +1,7 @@
+---
+severity_overrides:
+exclude:
+  - azure-container-configured-network-policy
+  - azure-container-logging
+  - azure-container-limit-authorized-ips
+  - azure-network-no-public-ingress

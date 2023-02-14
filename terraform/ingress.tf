@@ -18,7 +18,7 @@ resource "kubernetes_config_map" "nginx_ingress_values" {
     controller:
       service:
         loadBalancerIP: ${azurerm_public_ip.public_ip.ip_address}
-        annotations: 
+        annotations:
           service.beta.kubernetes.io/azure-load-balancer-resource-group: ${azurerm_resource_group.resource_group.name}
     YAML
   }

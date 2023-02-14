@@ -1,5 +1,5 @@
 data "azurerm_client_config" "current" {}
-data "azurerm_subscription" "current" {}
+#data "azurerm_subscription" "current" {}
 
 resource "random_id" "id" {
   byte_length = 2

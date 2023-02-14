@@ -14,6 +14,17 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = ">= 2.17.0"
     }
+
+    random = {
+      source  = "hashicorp/random"
+      version = "3.4.3"
+    }
+
+    azuread = {
+      source  = "hashicorp/azuread"
+      version = "2.33.0"
+    }
+
   }
 
 }
@@ -30,8 +41,8 @@ provider "azapi" {
 }
 
 provider "kubernetes" {
-  host                   = data.azurerm_kubernetes_cluster.aks.kube_admin_config.0.host
-  client_certificate     = base64decode(data.azurerm_kubernetes_cluster.aks.kube_admin_config.0.client_certificate)
-  client_key             = base64decode(data.azurerm_kubernetes_cluster.aks.kube_admin_config.0.client_key)
-  cluster_ca_certificate = base64decode(data.azurerm_kubernetes_cluster.aks.kube_admin_config.0.cluster_ca_certificate)
+  host                   = data.azurerm_kubernetes_cluster.aks.kube_admin_config[0].host
+  client_certificate     = base64decode(data.azurerm_kubernetes_cluster.aks.kube_admin_config[0].client_certificate)
+  client_key             = base64decode(data.azurerm_kubernetes_cluster.aks.kube_admin_config[0].client_key)
+  cluster_ca_certificate = base64decode(data.azurerm_kubernetes_cluster.aks.kube_admin_config[0].cluster_ca_certificate)
 }

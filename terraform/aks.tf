@@ -3,10 +3,6 @@ resource "random_integer" "services_cidr" {
   max = 127
 }
 
-data "azurerm_kubernetes_service_versions" "current" {
-  location = azurerm_resource_group.resource_group.location
-}
-
 resource "azurerm_kubernetes_cluster" "aks" {
   depends_on = [
     azurerm_public_ip.public_ip

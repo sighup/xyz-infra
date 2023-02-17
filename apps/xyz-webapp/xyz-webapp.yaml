@@ -21,6 +21,7 @@ spec:
     spec:
       chart: xyz-webapp
       version: '>=0.0.2'
+      reconcileStrategy: Revision
       sourceRef:
         kind: HelmRepository
         name: xyz-webapp

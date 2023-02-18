@@ -20,7 +20,7 @@ spec:
   chart:
     spec:
       chart: xyz-webapp
-      version: '>=0.0.2'
+      version: '>=0.0.0 <1.0.0'
       reconcileStrategy: Revision
       sourceRef:
         kind: HelmRepository

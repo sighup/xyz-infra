@@ -3,7 +3,7 @@ resource "azapi_resource" "flux_install" {
     azurerm_kubernetes_cluster.aks
   ]
 
-  type      = "Microsoft.KubernetesConfiguration/extensions@2021-09-01"
+  type      = "Microsoft.KubernetesConfiguration/extensions@2022-11-01"
   name      = "flux"
   parent_id = azurerm_kubernetes_cluster.aks.id
 
@@ -11,6 +11,10 @@ resource "azapi_resource" "flux_install" {
     properties = {
       extensionType           = "microsoft.flux"
       autoUpgradeMinorVersion = true
+      configurationSettings = {
+        "image-automation-controller.enabled" = "true"
+        "image-reflector-controller.enabled"  = "true"
+      }
     }
   })
 }
@@ -20,7 +24,7 @@ resource "azapi_resource" "flux_config" {
     azapi_resource.flux_install
   ]
 
-  type      = "Microsoft.KubernetesConfiguration/fluxConfigurations@2022-03-01"
+  type      = "Microsoft.KubernetesConfiguration/fluxConfigurations@2022-11-01"
   name      = "aks-flux-extension"
   parent_id = azurerm_kubernetes_cluster.aks.id
 
